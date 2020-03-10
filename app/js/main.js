@@ -6,9 +6,9 @@ angular
 
   // The invoice displayed when the user first uses the app
   .constant("DEFAULT_INVOICE", {
-    gst_integrated: 13.0,
-    cgst: 0,
-    sgst: 0,
+    gst_integrated: 0,
+    cgst: 9,
+    sgst: 9,
     invoice_number: 10,
     customer_info: {
       name: "",
