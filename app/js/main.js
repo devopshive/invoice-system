@@ -4,16 +4,20 @@ angular
   // The default logo for the invoice
   .constant("DEFAULT_LOGO", "images/victor_logo.png")
 
+  .constant("PIPES_LOGO", "images/pipes.jpg")
+
   // The invoice displayed when the user first uses the app
   .constant("DEFAULT_INVOICE", {
     gst_integrated: 0,
     cgst: 9,
     sgst: 9,
     invoice_number: 10,
+    current_time: new Date(),
     customer_info: {
       name: "",
       address1: "",
       address2: "",
+      gst_number: "",
       postal: ""
     },
     company_info: {
@@ -134,20 +138,34 @@ angular
     "$http",
     "DEFAULT_INVOICE",
     "DEFAULT_LOGO",
+    "PIPES_LOGO",
     "LocalStorage",
     "Currency",
+    "$filter",
+    "$timeout",
     function(
       $scope,
       $http,
       DEFAULT_INVOICE,
       DEFAULT_LOGO,
+      PIPES_LOGO,
       LocalStorage,
-      Currency
+      Currency,
+      $filter,
+      $timeout
     ) {
       // Set defaults
       $scope.currencySymbol = "₹";
       $scope.logoRemoved = false;
       $scope.printMode = false;
+      $scope.tickInterval = 1000; //in ms
+
+      var tick = function() {
+        $scope.invoice.current_time = Date.now(); // get the current time
+        $timeout(tick, $scope.tickInterval); // reset the timer
+      };
+
+      $timeout(tick, $scope.tickInterval);
 
       (function init() {
         // Attempt to load invoice from local storage
@@ -160,6 +178,7 @@ angular
         !(function() {
           var logo = LocalStorage.getLogo();
           $scope.logo = logo ? logo : DEFAULT_LOGO;
+          $scope.pipes_logo = PIPES_LOGO;
         })();
 
         $scope.availableCurrencies = Currency.all();
